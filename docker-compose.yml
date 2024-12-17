@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: devops
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - two-tier-dockerbridge-flask-mysql
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  two-tier-dockerbridge-flask-mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: two-tier-dockerbridge-flask-mysql
+    ports:
+      - "5000:5000"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: devops
+    depends_on:
+      - mysql
+    networks:
+      - two-tier-dockerbridge-flask-mysql
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mysql:
+
+networks:
+  two-tier-dockerbridge-flask-mysql:
+    driver: bridge
