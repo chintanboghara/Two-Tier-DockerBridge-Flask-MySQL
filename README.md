@@ -125,3 +125,35 @@ Example output:
 This setup provides a simple two-tier environment with Flask as the front-end application and MySQL as the back-end database, all within Docker containers connected via a bridge network.
 
 - The Flask app is running on port `5000`. Access it via `http://<your-server-ip>:5000`.
+
+## **Docker Compose Commands**
+
+### Build and Start the Services:
+
+```bash
+docker-compose up -d
+```
+
+### Stop and Remove the Services:
+
+```bash
+docker-compose down
+```
+
+### Rebuild Services (if needed):
+
+```bash
+docker-compose up -d --build
+```
+
+### View Logs for All Services:
+
+```bash
+docker-compose logs -f
+```
+
+### Restart Specific Services:
+
+```bash
+docker-compose restart flask mysql
+```
